@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Tareas Académicas - TCC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+    <div class="wrapper">
+        {% if current_user.is_authenticated %}
+        <nav id="sidebar" class="bg-dark text-white p-3">
+            <h4 class="text-center py-3 border-bottom border-secondary">TCC Tareas</h4>
+            <ul class="nav flex-column mt-4">
+                <li class="nav-item mb-2"><a href="{{ url_for('tasks.dashboard') }}" class="nav-link text-white"><i class="fas fa-home me-2"></i> Panel Principal</a></li>
+                <li class="nav-item mb-2"><a href="{{ url_for('tasks.task_list') }}" class="nav-link text-white"><i class="fas fa-tasks me-2"></i> Gestión de Tareas</a></li>
+                <li class="nav-item mb-2"><a href="{{ url_for('tasks.analytics') }}" class="nav-link text-white"><i class="fas fa-chart-bar me-2"></i> Estadísticas</a></li>
+                {% if current_user.role == 'admin' %}
+                <li class="nav-item mb-2"><a href="{{ url_for('tasks.management') }}" class="nav-link text-white"><i class="fas fa-users-cog me-2"></i> Grupos y Responsables</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
+        <div id="content" class="w-100">
+            {% if current_user.is_authenticated %}
+            <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4">
+                <div class="container-fluid">
+                    <span class="navbar-brand mb-0 h1 text-primary fw-bold">Sistema de Tareas Colaborativas</span>
+                    <div class="d-flex align-items-center">
+                        <span class="me-3 text-muted"><i class="fas fa-user-circle me-1"></i> {{ current_user.username }} ({{ current_user.role }})</span>
+                        <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger btn-sm"><i class="fas fa-sign-out-alt"></i> Salir</a>
+                    </div>
+                </div>
+            </nav>
+            {% endif %}
+
+            <div class="container-fluid p-4">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

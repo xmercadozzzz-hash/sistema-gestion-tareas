@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">Estadísticas y Análisis de Datos</h2>
+<div class="row">
+    <div class="col-md-6 mb-4"><div class="card p-3 shadow-sm text-center"><h5>Tareas por Estado</h5><img src="data:image/png;base64,{{ status_chart }}" class="img-fluid" alt="Estado"></div></div>
+    <div class="col-md-6 mb-4"><div class="card p-3 shadow-sm text-center"><h5>Tareas por Prioridad</h5><img src="data:image/png;base64,{{ priority_chart }}" class="img-fluid" alt="Prioridad"></div></div>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+    min-height: 100vh;
+}
+#sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    background: #1e293b;
+    color: #fff;
+    transition: all 0.3s;
+}
+#sidebar .nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+#content {
+    width: 100%;
+}

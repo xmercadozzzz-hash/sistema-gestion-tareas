@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Gestión de Tareas</h2>
+    <a href="{{ url_for('tasks.create_task') }}" class="btn btn-primary"><i class="fas fa-plus me-1"></i> Nueva Tarea</a>
+</div>
+
+<div class="card p-3 mb-4 shadow-sm">
+    <form method="GET" class="row g-3">
+        <div class="col-md-4">
+            <input type="text" name="search" class="form-control" placeholder="Buscar por título..." value="{{ search_query }}">
+        </div>
+        <div class="col-md-3">
+            <select name="status" class="form-select">
+                <option value="">Todos los Estados</option>
+                <option value="pendiente" {% if selected_status=='pendiente' %}selected{% endif %}>Pendiente</option>
+                <option value="en proceso" {% if selected_status=='en proceso' %}selected{% endif %}>En Proceso</option>
+                <option value="completada" {% if selected_status=='completada' %}selected{% endif %}>Completada</option>
+                <option value="vencida" {% if selected_status=='vencida' %}selected{% endif %}>Vencida</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="priority" class="form-select">
+                <option value="">Todas las Prioridades</option>
+                <option value="baja" {% if selected_priority=='baja' %}selected{% endif %}>Baja</option>
+                <option value="media" {% if selected_priority=='media' %}selected{% endif %}>Media</option>
+                <option value="alta" {% if selected_priority=='alta' %}selected{% endif %}>Alta</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-secondary w-100"><i class="fas fa-filter"></i> Filtrar</button>
+        </div>
+    </form>
+</div>
+
+<div class="card p-4 shadow-sm">
+    {% if tasks %}
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Título</th><th>Grupo</th><th>Responsable</th><th>Límite</th><th>Prioridad</th><th>Estado</th><th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in tasks %}
+                <tr>
+                    <td><strong>{{ t.title }}</strong><br><small class="text-muted">{{ t.description[:50] }}...</small></td>
+                    <td>{{ t.group_rel.name if t.group_rel else 'N/A' }}</td>
+                    <td>{{ t.responsible_rel.name if t.responsible_rel else 'N/A' }}</td>
+                    <td>{{ t.due_date.strftime('%Y-%m-%d') }}</td>
+                    <td><span class="badge bg-secondary">{{ t.priority }}</span></td>
+                    <td><span class="badge bg-{{ 'success' if t.status=='completada' else ('danger' if t.status=='vencida' else 'warning') }}">{{ t.status }}</span></td>
+                    <td>
+                        <a href="{{ url_for('tasks.edit_task', id=t.id) }}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
+                        <form action="{{ url_for('tasks.delete_task', id=t.id) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Desea eliminar esta tarea?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+        <h5>No se encontraron tareas</h5>
+        <p class="text-muted">Intente cambiar los filtros o cree una nueva tarea.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
